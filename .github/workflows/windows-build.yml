@@ -33,7 +33,7 @@ jobs:
           repository: autovyn-orgn/tally-integration-windows
           path: node-project
           token: ${{ secrets.PAT_TOKEN }}
-          ref: prod
+          ref: task/yogendra/electron-autoupdate-test
 
       # ✅ Set up Node.js
       - name: Set up Node.js
@@ -70,25 +70,29 @@ jobs:
         run: |
           $envContent = "${{ secrets.ENV_BASE64 }}"
           [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($envContent)) | Out-File -FilePath .env -Encoding utf8
-      - name: Recreate dist.env from secret
+      - name: Recreate node-project/dist.env from secret
         run: |
           $envContent = "${{ secrets.ENV_BASE64_DIST }}"
-          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($envContent)) | Out-File -FilePath dist.env -Encoding utf8
+          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($envContent)) | Out-File -FilePath node-project/dist.env -Encoding utf8
 
       # ✅ Build Node.js project
       - name: Install Node.js dependencies
+        working-directory: node-project
         run: yarn
 
       - name: Build Node.js project
+        working-directory: node-project
         run: yarn build:prod
 
       - name: Verify dist output
+        working-directory: node-project
         run: |
           dir dist
           dir dist\launcher.js
 
       # ✅ Build Electron project
       - name: Build & Publish Electron project
+        working-directory: node-project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn electron:build
