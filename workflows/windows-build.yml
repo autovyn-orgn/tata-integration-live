@@ -26,7 +26,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           ref: prod
 
-      # ✅ Clone Node             Repo
+      # ✅ Clone Node Repo
       - name: Checkout Node repo
         uses: actions/checkout@v4
         with:
